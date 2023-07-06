@@ -87,22 +87,24 @@ def space_tokenize(s: str) -> list[str]:
     return shlex.split(s, posix=False)
 
 
-def print_table(col: list[str], rows: list[list[str]]):
+def print_table(col: list[str], rows: list[list[str]]) -> str:
+    width = str_width
+    printed = []
+
     # max length among the rows
     indent : dict[int][int] = {}
-    for i in range(len(col)): indent[i] = str_width(col[i])
+    for i in range(len(col)): indent[i] = width(col[i])
     for r in rows:
-        for i in range(len(col)): indent[i] = max(indent[i], str_width(r[i]))
+        for i in range(len(col)): indent[i] = max(indent[i], width(r[i]))
 
-    print()
     col_title = "| "
     col_sep = "|-"
     for i in range(len(col)):
         if col[i] is None: col[i] = ''
-        col_title += col[i] + spaces(indent[i] - str_width(col[i]) + 1) + " | "
+        col_title += col[i] + spaces(indent[i] - width(col[i]) + 1) + " | "
         col_sep += gen_tokens(indent[i] + 1, "-") + "-|"
         if i < len(col) - 1: col_sep += "-"
-    print(col_sep + "\n" + col_title + "\n" + col_sep)
+    printed.append(col_sep + "\n" + col_title + "\n" + col_sep)
 
     for r in rows:
         row_ctn = "| "
@@ -110,6 +112,7 @@ def print_table(col: list[str], rows: list[list[str]]):
         for i in range(len(col)):
             rv = r[i]
             if rv is None: rv = ''
-            row_ctn += rv + spaces(1 + indent[i] - str_width(rv)) + " | "
-        print(row_ctn)
-    print(col_sep)
+            row_ctn += rv + spaces(1 + indent[i] - width(rv)) + " | "
+        printed.append(row_ctn)
+    printed.append(col_sep)
+    return "\n".join(printed)
