@@ -1,0 +1,15 @@
+[project]
+name = "pystuff"
+description = "Python Stuff"
+version = "0.0.1"
+authors = [
+    { name = "yongj.zhuang" }
+]
+dependencies = [
+]
+
+[project.optional-dependencies]
+dev = [ ]
+
+[build-system]
+requires = ["setuptools", "wheel"]
