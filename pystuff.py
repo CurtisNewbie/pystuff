@@ -59,3 +59,19 @@ def random_str(n: int) -> str:
     Generate random string
     '''
     return ''.join(random.choices(string.ascii_letters, string.digits, k=n))
+
+
+def quote(s: str, mark: str = "'") -> str:
+    '''
+    Quote a string
+    '''
+    if not s:
+        return ""
+    return mark + s.strip() + mark
+
+
+def escape_quote(s: str, quote: str = "'", escape: str = '\\') -> str:
+    '''
+    Escape quote with \\ prefix
+    '''
+    return s.replace(quote, f'{escape}{quote}')
