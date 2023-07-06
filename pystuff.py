@@ -87,7 +87,20 @@ def space_tokenize(s: str) -> list[str]:
     return shlex.split(s, posix=False)
 
 
+def index_list(ar : list[str]) -> dict[str]:
+    '''
+    Build index for the values in list, returns a dict where K is the value, V is the index
+    '''
+    idx = {}
+    for i in range(len(ar)):
+        idx[ar[i]] = i
+    return idx
+
+
 def print_table(col: list[str], rows: list[list[str]], include_line_end: bool = True, exclude_cols: set[str] = None) -> str:
+    '''
+    Convert table to a readable string
+    '''
     width = str_width
     printed = []
 
