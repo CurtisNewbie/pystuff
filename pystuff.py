@@ -87,7 +87,7 @@ def space_tokenize(s: str) -> list[str]:
     return shlex.split(s, posix=False)
 
 
-def print_table(col: list[str], rows: list[list[str]], include_line_end: bool = False) -> str:
+def print_table(col: list[str], rows: list[list[str]], include_line_end: bool = True) -> str:
     width = str_width
     printed = []
 
