@@ -87,7 +87,7 @@ def space_tokenize(s: str) -> list[str]:
     return shlex.split(s, posix=False)
 
 
-def print_table(col: list[str], rows: list[list[str]], include_line_end: bool = True) -> str:
+def print_table(col: list[str], rows: list[list[str]], include_line_end: bool = True, exclude_cols: set[str] = None) -> str:
     width = str_width
     printed = []
 
@@ -101,6 +101,7 @@ def print_table(col: list[str], rows: list[list[str]], include_line_end: bool = 
     col_sep = "|-"
     for i in range(len(col)):
         if col[i] is None: col[i] = ''
+        if exclude_cols and col[i] in exclude_cols: continue
         col_title += col[i] + spaces(indent[i] - width(col[i]) + 1) + " | "
         col_sep += gen_tokens(indent[i] + 1, "-") + "-|"
         if i < len(col) - 1: col_sep += "-"
@@ -110,6 +111,7 @@ def print_table(col: list[str], rows: list[list[str]], include_line_end: bool = 
         row_ctn = "| "
 
         for i in range(len(col)):
+            if exclude_cols and col[i] in exclude_cols: continue
             rv = r[i]
             if rv is None: rv = ''
             line = rv + spaces(1 + indent[i] - width(rv))
