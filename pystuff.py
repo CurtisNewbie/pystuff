@@ -3,7 +3,9 @@ import random
 import shlex
 import string
 import unicodedata
-
+import sys
+import subprocess
+import os
 
 def gen_tokens(cnt: int, token: str) -> str:
     '''
@@ -133,3 +135,53 @@ def print_table(col: list[str], rows: list[list[str]], include_line_end: bool = 
         printed.append(row_ctn)
     printed.append(col_sep)
     return "\n".join(printed)
+
+
+def get_platform():
+    '''
+    Get current os's platform, can be any one of [ 'darwin', 'win64', 'win32', 'wsl', 'linux' ]
+    '''
+    # https://stackoverflow.com/questions/434597/open-document-with-default-os-application-in-python-both-in-windows-and-mac-os
+    if sys.platform == 'linux':
+        try:
+            proc_version = open('/proc/version').read()
+            if 'Microsoft' in proc_version:
+                return 'wsl'
+        except:
+            pass
+    return sys.platform
+
+
+def open_with_default_app(filename):
+    '''
+    Open file with default application
+    '''
+    # https://stackoverflow.com/questions/434597/open-document-with-default-os-application-in-python-both-in-windows-and-mac-os
+    platform = get_platform()
+    if platform == 'darwin':
+        subprocess.call(('open', filename))
+    elif platform in ['win64', 'win32']:
+        os.startfile(filename.replace('/','\\'))
+    elif platform == 'wsl':
+        subprocess.call('cmd.exe /C start'.split() + [filename])
+    else:                                   # linux variants
+        subprocess.call(('xdg-open', filename))
+
+
+def quote_list(l: list[str], quote: str = "'"):
+    '''
+    Quote each item in the list with a single quote (by default), a new list is returned
+    '''
+    j = []
+    for i in range(len(l)): j.append(f"{quote}{l[i]}{quote}")
+    return j
+
+
+def rev_idx(ele: list[str], val: set[str] = None) -> dict[str]:
+    '''
+    Build index of val in ele, if val is None, idx for all values in ele is built
+    '''
+    idx = {}
+    for i in range(len(ele)):
+        if val is None or ele[i] in val: idx[ele[i]]  = i
+    return idx
