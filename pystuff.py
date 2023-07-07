@@ -6,6 +6,7 @@ import unicodedata
 import sys
 import subprocess
 import os
+import readline # don't remove this, this is for input()
 
 def gen_tokens(cnt: int, token: str) -> str:
     '''
@@ -185,3 +186,54 @@ def rev_idx(ele: list[str], val: set[str] = None) -> dict[str]:
     for i in range(len(ele)):
         if val is None or ele[i] in val: idx[ele[i]]  = i
     return idx
+
+
+def filter_by_idx(l: list[str], idx: set[int]) -> list[str]:
+    '''
+    Filter items in l by index in idx, a new list with filtered values is returned
+    '''
+    r = []
+    for i in range(len(l)):
+        if i in idx: continue
+        r.append(l[i])
+    return r
+
+
+def setup_completer():
+    '''
+    Introduce a word completer to readline
+    '''
+    readline.parse_and_bind("tab: complete")
+    readline.set_completer(completer)
+    global completer_candidates
+    completer_candidates = set()
+
+
+def completer(text, state):
+    '''
+    Completer function, used by prep_completer() for readline
+
+    Internally, it uses a global variable named completer_candidates, which is basically a set of string
+    '''
+    global completer_candidates
+    if not text: return None
+    options = [cmd for cmd in completer_candidates if cmd.startswith(text)]
+    if state < len(options): return options[state]
+    else: return None
+
+
+def feed_completer_nested(rl: list[list[str]]):
+    '''
+    feed words to completer
+    '''
+    for r in rl:
+        for v in r: feed_completer_nested(v)
+
+
+def feed_completer(word: str):
+    '''
+    feed words to completer
+    '''
+    global completer_candidates
+    if not word: return
+    completer_candidates.add(word)
