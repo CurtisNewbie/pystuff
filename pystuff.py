@@ -237,3 +237,26 @@ def feed_completer(word: str):
     global completer_candidates
     if not word: return
     completer_candidates.add(word)
+
+
+def dict_get(d, expr: str, default_val = None) -> any:
+    '''
+    Retrieve value from a dict recursively by providing a dot delimited expression, e.g., name.key.juice
+    '''
+    if not expr or not d: return default_val
+    if type(d) != dict: return default_val
+    sp = expr.split(".", 1)
+
+    if not sp[0] in d: d = None
+    else: d = d[sp[0]]
+
+    if len(sp) > 1: return dict_get(d, sp[1], default_val)
+    else: return d if d else default_val
+
+
+class DickWalker():
+    def __init__(self, target: dict):
+        self.target = target
+
+    def get(self, expr: str, default_val = None) -> any:
+        return dict_get(self.target, expr, default_val)

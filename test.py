@@ -24,6 +24,84 @@ class Tester(unittest.TestCase):
         print(cand)
 
 
+    def test_dict_get(self):
+        d = {
+            "name": {
+                "first" : "yongjie",
+                "last" : "zhuang"
+            }
+        }
+        got = pystuff.dict_get(d, "name.last")
+        self.assertEqual(got, "zhuang")
+
+        d = {
+            "name": {
+                "first" : "yongjie",
+                "last" : "zhuang"
+            }
+        }
+        got = pystuff.dict_get(d, "age", "unknown")
+        self.assertEqual(got, "unknown")
+
+        d = {
+            "name": {
+                "first" : "yongjie",
+                "last" : "zhuang"
+            }
+        }
+        got = pystuff.dict_get(d, "name.middle", "unknown")
+        self.assertEqual(got, "unknown")
+
+        d = None
+        got = pystuff.dict_get(d, "name.middle", "unknown")
+        self.assertEqual(got, "unknown")
+
+        d = None
+        got = pystuff.dict_get(d, "")
+        self.assertEqual(got, None)
+
+
+    def test_dwalker(self):
+        d = {
+            "name": {
+                "first" : "yongjie",
+                "last" : "zhuang"
+            }
+        }
+        walker = pystuff.DickWalker(d)
+        got = walker.get("name.last")
+        self.assertEqual(got, "zhuang")
+
+        d = {
+            "name": {
+                "first" : "yongjie",
+                "last" : "zhuang"
+            }
+        }
+        walker = pystuff.DickWalker(d)
+        got = walker.get("age", "unknown")
+        self.assertEqual(got, "unknown")
+
+        d = {
+            "name": {
+                "first" : "yongjie",
+                "last" : "zhuang"
+            }
+        }
+        walker = pystuff.DickWalker(d)
+        got = walker.get("name.middle", "unknown")
+        self.assertEqual(got, "unknown")
+
+        d = None
+        walker = pystuff.DickWalker(d)
+        got = walker.get("name.middle", "unknown")
+        self.assertEqual(got, "unknown")
+
+        d = None
+        walker = pystuff.DickWalker(d)
+        got = walker.get("")
+        self.assertEqual(got, None)
+
 
 if __name__ == "__main__":
     unittest.main()
