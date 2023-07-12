@@ -153,7 +153,7 @@ def get_platform():
     return sys.platform
 
 
-def open_with_default_app(filename):
+def default_open(filename):
     '''
     Open file with default application
     '''
