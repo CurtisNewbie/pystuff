@@ -7,4 +7,5 @@ CURR=$(pwd) \
 	&& git clone https://github.com/CurtisNewbie/pystuff && cd pystuff \
 	&& python3 -m pip install . \
 	&& rm -rf pystuff \
+	&& echo "/tmp/pystuff removed" \
 	&& cd $CURR
