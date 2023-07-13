@@ -15,8 +15,8 @@ actual_len = pystuff.str_width('苹果汁')
 print(actual_len)
 ```
 
-Curl based install script
+Install script
 
 ```sh
-curl https://raw.githubusercontent.com/CurtisNewbie/pystuff/main/curl_install.sh | bash
+curl https://raw.githubusercontent.com/CurtisNewbie/pystuff/main/install.sh | bash
 ```
