@@ -13,7 +13,7 @@ def gen_tokens(cnt: int, token: str) -> str:
     Generate N tokens joined as string
     '''
     s = ""
-    for i in range(cnt):
+    for _ in range(cnt):
         s += token
     return s
 
@@ -222,7 +222,7 @@ def completer(text, state):
     else: return None
 
 
-def feed_completer_nested(rl: list[list[str]]):
+def feed_completer_nested(rl: list[list]):
     '''
     feed words to completer
     '''
@@ -254,9 +254,11 @@ def dict_get(d, expr: str, default_val = None) -> any:
     else: return d if d else default_val
 
 
-class DickWalker():
+class DictWalker():
     def __init__(self, target: dict):
         self.target = target
 
     def get(self, expr: str, default_val = None) -> any:
         return dict_get(self.target, expr, default_val)
+
+

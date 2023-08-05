@@ -68,7 +68,7 @@ class Tester(unittest.TestCase):
                 "last" : "zhuang"
             }
         }
-        walker = pystuff.DickWalker(d)
+        walker = pystuff.DictWalker(d)
         got = walker.get("name.last")
         self.assertEqual(got, "zhuang")
 
@@ -78,7 +78,7 @@ class Tester(unittest.TestCase):
                 "last" : "zhuang"
             }
         }
-        walker = pystuff.DickWalker(d)
+        walker = pystuff.DictWalker(d)
         got = walker.get("age", "unknown")
         self.assertEqual(got, "unknown")
 
@@ -88,17 +88,17 @@ class Tester(unittest.TestCase):
                 "last" : "zhuang"
             }
         }
-        walker = pystuff.DickWalker(d)
+        walker = pystuff.DictWalker(d)
         got = walker.get("name.middle", "unknown")
         self.assertEqual(got, "unknown")
 
         d = None
-        walker = pystuff.DickWalker(d)
+        walker = pystuff.DictWalker(d)
         got = walker.get("name.middle", "unknown")
         self.assertEqual(got, "unknown")
 
         d = None
-        walker = pystuff.DickWalker(d)
+        walker = pystuff.DictWalker(d)
         got = walker.get("")
         self.assertEqual(got, None)
 
