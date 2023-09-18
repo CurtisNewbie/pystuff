@@ -8,6 +8,50 @@ import subprocess
 import os
 import readline # don't remove this, this is for input()
 
+T = '    '  # four space tab
+TT = T + T  # two tabs
+
+
+def assert_true(flag: bool, msg: str = 'Illegal Argument', hint: str = None) -> None:
+    """Assert the given flag is true, else print an error msg and exit the program"""
+    if flag is not True:
+        s = f"[Error] {msg}"
+        if hint is not None:
+            s += f" hint: {hint}"
+        print(s)
+        sys.exit(1)
+
+
+def to_camel_case(s: str) -> str:
+    """
+    Convert a string to camel case
+    """
+    is_prev_uc = False  # is prev in uppercase
+    s = s.lower()
+    ccs = ''
+    for i in range(len(s)):
+        ci = s[i]
+        if ci == '_':
+            is_prev_uc = True
+        else:
+            if is_prev_uc:
+                ccs += ci.upper()
+                is_prev_uc = False
+            else:
+                ccs += ci
+    return ccs
+
+
+def first_char_lower(s: str) -> str:
+    """Make first char lowercase"""
+    return s[0:1].lower() + s[1:]
+
+
+def first_char_upper(s: str) -> str:
+    """Make first char uppercase"""
+    return s[0:1].upper() + s[1:]
+
+
 def gen_tokens(cnt: int, token: str) -> str:
     '''
     Generate N tokens joined as string
@@ -252,6 +296,11 @@ def dict_get(d, expr: str, default_val = None) -> any:
 
     if len(sp) > 1: return dict_get(d, sp[1], default_val)
     else: return d if d else default_val
+
+
+def str_matches(t: str, v: str) -> bool:
+    """Check whether two string matches ignore cases"""
+    return t.casefold() == v.casefold()
 
 
 class DictWalker():
