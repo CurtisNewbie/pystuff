@@ -301,6 +301,12 @@ def feed_completer(word: str):
     completer_candidates.add(word)
 
 
+def defval(v, default_val) -> any:
+    if not v:
+        return default_val
+    return v
+
+
 def walk(dic, *nested_fields: str) -> any:
     '''
     Walk the dictionary, return None if not found.
