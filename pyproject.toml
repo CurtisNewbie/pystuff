@@ -6,6 +6,9 @@ authors = [
     { name = "yongj.zhuang" }
 ]
 dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "pydantic"
 ]
 
 [project.optional-dependencies]

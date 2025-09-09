@@ -346,3 +346,118 @@ class DictWalker():
 
     def get(self, expr: str, default_val=None) -> any:
         return dict_get(self.target, expr, default_val)
+
+
+import asyncio
+import signal
+import uvicorn
+from fastapi import APIRouter, FastAPI, HTTPException, Request
+from fastapi.responses import Response
+from http import HTTPStatus
+from typing import Any
+
+
+async def validate_json_request(raw_request: Request):
+    content_type = raw_request.headers.get("content-type", "").lower()
+    media_type = content_type.split(";", maxsplit=1)[0]
+    if media_type != "application/json":
+        raise HTTPException(
+            status_code=HTTPStatus.UNSUPPORTED_MEDIA_TYPE,
+            detail="Unsupported Media Type: Only 'application/json' is allowed"
+        )
+
+"""
+from fastapi import Request, Response
+from fastapi.responses import JSONResponse
+from openai import BaseModel
+from pystuff import *
+
+server = Server()
+
+class TranscribeRequest(BaseModel):
+    file: str
+
+@server.router.post("echo")
+async def transcribe(request: TranscribeRequest, raw_request: Request) -> Response:
+    print(request)
+    ok, resp = server.validate_auth(raw_request)
+    if not ok: return resp
+    return JSONResponse(content={
+        "content": "abc"
+    })
+
+server.start()
+"""
+
+class Server:
+    def __init__(self):
+        self.host = "127.0.0.1"
+        self.port = 8080
+        self.bearer = ""
+
+        # fastapi
+        self.router = APIRouter()
+        self.app = FastAPI()
+
+    async def serve_http(self, **uvicorn_kwargs: Any):
+        print("Available routes are:")
+        for route in self.app.routes:
+            methods = getattr(route, "methods", None)
+            path = getattr(route, "path", None)
+            if methods is None or path is None: continue
+            print(f"Route: {path}, Methods: {', '.join(methods)}")
+
+        config = uvicorn.Config(self.app, **uvicorn_kwargs)
+        config.load()
+        server = uvicorn.Server(config)
+        loop = asyncio.get_running_loop()
+        server_task = loop.create_task(server.serve(sockets=None))
+
+        def signal_handler() -> None:
+            # prevents the uvicorn signal handler to exit early
+            server_task.cancel()
+
+        async def dummy_shutdown() -> None:
+            pass
+
+        loop.add_signal_handler(signal.SIGINT, signal_handler)
+        loop.add_signal_handler(signal.SIGTERM, signal_handler)
+
+        try:
+            await server_task
+            return dummy_shutdown()
+        except asyncio.CancelledError:
+            print("Shutting down FastAPI HTTP server.")
+            return server.shutdown()
+
+    async def run_server(self) -> None:
+        host = self.host
+        port = self.port
+        print(f"Starting Web Server {host}:{port}")
+        root_path = "/"
+        self.app.include_router(self.router)
+        self.app.root_path = root_path
+        shutdown_task = await self.serve_http(
+            host=host,
+            port=port,
+            log_level="debug",
+        )
+        await shutdown_task
+
+    def start(self):
+        # entrypoint
+        asyncio.run(self.run_server())
+
+    def validate_auth(self, raw_request: Request):
+        if not self.bearer:
+            return [True, None]
+        auth = raw_request.headers.get("Authorization")
+        if not auth:
+            return [False, Response(status_code=401)]
+        auth = auth.strip()
+        if not auth.lower().startswith("bearer"):
+            return [False, Response(status_code=401)]
+        auth = auth[6:].strip()
+        if auth != self.bearer:
+            return [False, Response(status_code=401)]
+        return [True, None]
